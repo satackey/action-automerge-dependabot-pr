@@ -1,0 +1,21 @@
+name: Auto merge pull requests by dependabot
+description: 'Comments `@dependabot merge`'
+inputs:
+  token:
+    description: Personal access token
+    required: true
+    default: ${{ github.token }}
+runs:
+  using: composite
+  steps:
+    - if: github.actor == 'dependabot[bot]'
+      uses: actions/github-script@v2.0.0
+      with:
+        github-token: ${{ inputs.token }}
+        script: |
+          await github.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '@dependabot merge'
+          })
